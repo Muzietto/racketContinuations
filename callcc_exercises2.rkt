@@ -39,7 +39,7 @@
 
 (define find (lambda (pred aList)
                (call/cc (lambda (cont)
-                          (letrec ((helper (lambda (pred x)
+                          (letrec ((helper (lambda (pred x) ; fucking 'lambda (x)' in the paper!!!!
                                              (cond ((null? x) (cont '()))
                                                    ((pred (car x)) (cont (car x)))
                                                    (else (helper pred (cdr x)))))))
