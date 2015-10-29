@@ -13,10 +13,11 @@
 
 ;(counter) ; counts till 4
 
+
 (define current-continuation
   (lambda () (call/cc (lambda (cc) (cc cc)))))
 
-(let ((cc (current-continuation)))
+(let ((cuco (current-continuation)))
   (cond
     ((equal? count 5) #f)
     (else
@@ -24,4 +25,5 @@
      (display count)
      (newline)
      (set! count (+ count 1))
-     (cc cc))))
+     (cuco cuco))))
+
