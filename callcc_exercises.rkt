@@ -10,8 +10,22 @@
 
 (define pippo null)
 (+ 1 (call/cc (lambda (k)
-             (set! pippo k)
-             (k (+ (* 3 4) 15)))))
+             (set! pippo k) ; allows (pippo 3) -> 4 afterwards
+             (k (+ (* 3 4) 15)))) ; returns 27
+   ) ; returns 28 to the repl
+
+(set! pippo null)
+(+ 1 (call/cc (lambda(cc)
+                (set! pippo cc) ; allows (pippo 3) -> 4 afterwards
+                2)) ; returns 2!!!!!!!
+   ) ; returns 3 to the repl
+
+(set! pippo null)
+(+ 1 (call/cc (lambda(cc)
+                (set! pippo cc) ; allows (pippo 3) -> 4 afterwards
+                (cc 8) ; returns 8
+                2))
+   ) ; returns 9 to the repl
 
 ; from https://www.youtube.com/watch?v=2GfFlfToBCo
 ; x gets bound to the return value of call/cc
