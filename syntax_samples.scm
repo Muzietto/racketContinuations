@@ -27,3 +27,9 @@
    ((equal? alfa 234) (newline) (display alfa))
    ((equal? alfa 235) (newline) (display "xxxxxxxx"))
    (else               (error "Contract violation!")))
+
+(define (pippo pluto) (display (+ pluto 1)))
+(pippo 2) ; returns 3
+
+(define pippot (lambda (plutot) (+ plutot 1)))
+(pippot 3) ; returns 4
