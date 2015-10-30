@@ -1,0 +1,59 @@
+In
+
+  (let ((cc (current-continuation)))
+    ...)
+
+The continuation of (current-continuation) is
+
+  (lambda (_)
+    (let ((cc _))
+      ...)
+
+Call this continuation c0.
+
+The definition of current-continuation is:
+
+  (define (current-continuation)
+    (call/cc (lambda (cc) (cc cc))))
+
+  So call/cc calls (lambda (cc) (cc cc)) with c0 as argument:
+
+  ((lambda (cc) (cc cc)) c0)
+     = (c0 c0)
+
+Inserting the value of c0:
+
+  ((lambda (_)
+     (let ((cc _))
+       ...)
+   c0)
+
+which becomes:
+
+   (let ((cc c0))
+     ...)
+
+Which means that inside ... the identifier cc is now bound to the value c0.
+
+If  (c0 42) occurs in the ...
+
+The we get:
+
+   (c0 42)
+    = ((lamdba (_)
+     (let ((cc _))
+      ...)
+   42)
+    = (let ((cc 42))
+     ...)
+     
+And now cc is bound to the value 42.
+
+The example uses (procedure? cc) and (future-value? cc) to test whether cc is bound to the continuation (if (procedure? cc) is true) and or another value (the future value is here 42).
+
+So in:
+
+  (define (current-continuation)
+    (call/cc (lambda (cc) (cc cc))))
+  
+the value passed to (lambda (cc) (cc cc))) is the continuation. If we want to our hands on it, we need to return it and we do that by passing it to the continuation. I.e.  (cc something) will return something, and since we want to get the continuation itself we use (cc cc).
