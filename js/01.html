@@ -1,0 +1,23 @@
+<html>
+<head><title>pyramide of continuations</title>
+<script>
+var pyt, add, square, mult
+;
+
+add = (x, y, cont) => { cont(x + y); };
+
+mult = (x, y, cont) => { cont(x * y); };
+
+square = (x, cont) => { mult(x, x, cont); };
+
+pyt = (x, y, cont) => { square(x, sqx => square(y, sqy => add(sqx, sqy, cont))); };
+
+pyt(3, 4, alert);
+
+
+
+
+</script>
+</head>
+<body><h1>js experiments</h1><p>use the console</p></body>
+</html>

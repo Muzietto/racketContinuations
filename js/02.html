@@ -1,0 +1,28 @@
+<html>
+<head><title>async continuations</title>
+<script>
+var pyt, add, square, mult
+;
+
+Function.prototype.async = async;
+
+add = (x, y, cont) => { cont.async(x + y); };
+
+mult = (x, y, cont) => { cont.async(x * y); };
+
+square = (x, cont) => { mult.async(x, x, cont); };
+
+pyt = (x, y, cont) => { square.async(x, sqx => square.async(y, sqy => add.async(sqx, sqy, cont))); };
+
+pyt.async(3, 4, alert);
+
+function async() {
+  var args = [].slice.call(arguments);
+  setTimeout(this.apply(null, args), 0);
+}
+
+</script>
+</head>
+<body><h1>js experiments</h1><p>use the console</p></body>
+
+</html>

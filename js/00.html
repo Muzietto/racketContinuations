@@ -1,0 +1,23 @@
+<html>
+<head><title>no_continuations</title>
+<script>
+var pyt, add, square, mult
+;
+
+add = (x, y) => x + y;
+
+mult = (x, y) => x * y;
+
+square = (x) => mult(x, x);
+
+pyt = (x, y) => add(square(x), square(y));
+
+alert(pyt(3, 4));
+
+
+
+
+</script>
+</head>
+<body><h1>js experiments</h1><p>use the console</p></body>
+</html>
