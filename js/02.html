@@ -1,25 +1,67 @@
+<!DOCTYPE html>
 <html>
-<head><title>async continuations</title>
+<head><meta charset="UTF-8"><title>async continuations</title>
 <script>
 var pyt, add, square, mult
 ;
 
-Function.prototype.async = async;
+Function.prototype.async_maintaining_stack = async_maintaining_stack;
+Function.prototype.async_clearing_stack = async_clearing_stack;
 
-add = (x, y, cont) => { cont.async(x + y); };
-
-mult = (x, y, cont) => { cont.async(x * y); };
-
-square = (x, cont) => { mult.async(x, x, cont); };
-
-pyt = (x, y, cont) => { square.async(x, sqx => square.async(y, sqy => add.async(sqx, sqy, cont))); };
-
-pyt.async(3, 4, alert);
-
-function async() {
-  var args = [].slice.call(arguments);
-  setTimeout(this.apply(null, args), 0);
+function async_maintaining_stack() {
+  setTimeout(this.apply(null, arguments), 0); // this one keeps the call stack of this
 }
+function async_clearing_stack() {
+  setTimeout.bind(null, this, 0).apply(null, arguments); // this one clears the call stack of this
+}
+
+/////////////// Maintaining the stack //////////////////////
+function add_maintaining_stack(x, y, cont) {
+  debugger; // watch the stack: it's a huge pile
+  cont.async_maintaining_stack(x + y); 
+};
+
+function mult_maintaining_stack(x, y, cont) { 
+  cont.async_maintaining_stack(x * y); 
+};
+
+function square_maintaining_stack(x, cont) { 
+  mult_maintaining_stack.async_maintaining_stack(x, x, cont); 
+};
+
+function pyt_maintaining_stack(x, y, cont) { 
+  square_maintaining_stack.async_maintaining_stack(x, (function(sqx) { 
+    square_maintaining_stack.async_maintaining_stack(y, (function(sqy) { 
+      add_maintaining_stack.async_maintaining_stack(sqx, sqy, cont);
+    }));
+  }));
+};
+
+pyt_maintaining_stack.async_maintaining_stack(3, 4, alert);
+
+/////////////// Clearing the stack //////////////////////
+function add_clearing_stack(x, y, cont) {
+  debugger; // watch the stack: it's one layer
+  cont.async_clearing_stack(x + y); 
+};
+
+function mult_clearing_stack(x, y, cont) { 
+  cont.async_clearing_stack(x * y); 
+};
+
+function square_clearing_stack(x, cont) { 
+  mult_clearing_stack.async_clearing_stack(x, x, cont); 
+};
+
+function pyt_clearing_stack(x, y, cont) { 
+  square_clearing_stack.async_clearing_stack(x, (function(sqx) { 
+    square_clearing_stack.async_clearing_stack(y, (function(sqy) { 
+      add_clearing_stack.async_clearing_stack(sqx, sqy, cont);
+    }));
+  }));
+};
+
+pyt_clearing_stack.async_clearing_stack(3, 4, alert);
 
 </script>
 </head>
