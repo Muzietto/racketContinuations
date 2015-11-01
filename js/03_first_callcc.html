@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>first call/cc</title>
+<script>
+// http://stackoverflow.com/questions/14019341/whats-the-difference-between-a-continuation-and-a-callback/14022348#14022348
+
+pyt(3, 4, alert);
+
+function pyt(x, y, cont) {
+  var x_squared = callcc(square.bind(null, x)); // curry x as first arg to next square call
+  var y_squared = callcc(function(cc) { square(y, cc); }); // same as above
+  add(x_squared, y_squared, cont);
+}
+
+function square(x, cont) {
+  multiply(x, x, cont);
+}
+
+function multiply(x, y, cont) {
+  cont(x * y);
+}
+
+function add(x, y, cont) {
+  cont(x + y);
+}
+
+function callcc(f) { // f is a function ready to run and needing only a continuation
+  var bobo;
+  // cuco is a continuation that will put the first value it will receive at its own place
+  var cuco = function(x) {
+    cuco = x; // side effect!
+    bobo = x;
+  };
+
+  f(cuco); // cuco is now whatever x was returned by the run of f
+
+  return cuco; // you could return bobo as well...
+}
+
+pyt2(3, 4, alert);
+
+function pyt2(x, y, cont) {
+  var x_squared = callcc(square.bind(null, x)); // curry x as first arg to next square call
+  callcc(function(cc) {
+    square(y, function(y_squared) {
+      add(x_squared, y_squared, cont);
+    }); 
+  });
+}
+
+pyt3(3, 4, alert);
+
+function pyt3(x, y, cont) {
+  callcc(function(cc) {
+    square(x, function(x_squared) {
+      square(y, function(y_squared) {
+        add(x_squared, y_squared, cont);
+      }); 
+    });
+  });
+}
+
+</script>
+</head>
+<body><h1>js experiments</h1><p>use the console</p></body>
+</html>
