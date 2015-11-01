@@ -1,6 +1,7 @@
 Racket Continuations
 ====================
-These are all studies and experiments with continuations in DrRacket.
+These are all studies and experiments with continuations in Dr.Racket.
+There are also some experiments with JavaScript along the way.
 
 It will also probably grow to include studies with streams.
 
@@ -17,6 +18,7 @@ OFFICIAL RELEASE
 DEBITS AND CREDITS
 ------------------
 I am in debt with:
-- Various answers given by Ed Barzylai on StackOverflow
+- Various answers given by Ed Barzylai on Stack Overflow
+- Answers from soegaard and Aadit M Shah on Stack Overflow
 
-Any feedback is welcome.
+Every feedback is welcome.
