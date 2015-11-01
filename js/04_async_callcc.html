@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>async continuations</title>
+<script>
+
+Function.prototype.async = async_clearing_stack;
+
+function async_clearing_stack() {
+  setTimeout.bind(null, this, 0).apply(null, arguments); // this one clears the call stack of this
+}
+
+/////////////// Clearing the stack //////////////////////
+function add(x, y, cont) {
+  cont.async(x + y);
+};
+
+function mult(x, y, cont) { 
+  cont.async(x * y); 
+};
+
+function square(x, cont) { 
+  mult.async(x, x, cont); 
+};
+
+function pyt(x, y, cont) {
+  callcc.async(square.bind(null, x), function(x_squared) {
+    callcc.async(function(cc) {
+      square(y, function(y_squared) {
+        add.async(x_squared, y_squared, cont);
+      });
+    });
+  });
+};
+
+function callcc(f, cc) {
+  f.async(cc);
+}
+
+pyt.async(3, 4, alert);
+
+</script>
+</head>
+<body><h1>js experiments</h1><p>use the console</p></body>
+
+</html>
